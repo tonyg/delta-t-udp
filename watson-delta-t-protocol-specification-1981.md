@@ -2533,31 +2533,81 @@ community influenced several decisions.
    1980ComputerNetworkProtocols,IEEECal.No.80CH 1529-7C, May 1980,
    pp. 121-128.
 
-- 3: J. Burruss, et al, "Specification of the Transport Protocol," NBS Report ICST/HLNP-81-1, Feb. 1981.
-- 4: J. G. Fletcher, R. W. LWatson, "An Overview of the LINCS Architecture," LLNL Working Document, July 9, 1981.
-- 5: J. G. Fletcher, "LINCS Security Policy," LLNL Woirking Document, July 15, 1981.
-- 6: J. G. Fletcher, R. W. Watson, "Mechanisms for a Reliable Timer-Based Protocol," Computer Networks, No. 4/5, September/October, pp. 271-290. Also in Proceedings Computer Network Protocols Symposium, Liege, Belgium, February 1978, p. C5-1/C5-17.
-- 7: L. Garlick, R. Rom, and J. Postel, "Reliable Host to Host Protocols: Problems and Techniques," Proceedings 5th Data Communications Symposium, IEEE/ACM, September 1977.
-- 8: J. L. Grange, M. Gien, eds.. Flow Control in Computer Networks, IFIP, North-Holland Publishing Co., 1979.
-- 9: J. F. Haverty, R. D. Rettberg, "Inter-process Communication for a Server in UNIX," Proceedings Compcon 78, September 1978, pp. 312-315.
-- 10: ISO, "Draft Connection-oriented Basic Transport Protocol Specification," June 1981.
-- 11: J. M. McQuillan, V. G. Cerf, Tutorial: A Practical View of Computer Communications Protocols, IEEE Catalog No. EHO 137-0, 1978.
-- 12: J. 6. Postel, "Specification of Internetwork Transmission Control Protocol," TCP Version 4, Jan. 1980, available through Defense Advanced
-Research Projects Agency, IPTO.
-- 13: L. Pouzin and H. Zimmermann, "A Tutorial on Protocols," Proceedings IEEE,
-Vol.66, No.11,November1978,pp.1346-1370.
-- 14: C. A. Sunshine and Y. K. Dalai, "Connection Management in Transport
-Protocols," Computer Networks, Vol. 2, No. 6, 1978, pp. 454-473.
-- 15: R. W. Watson and J. G. Fletcher, "An Architecture for Support of Network Operating System Services," Proceedings 4th Berkeley Conference on
-DistributedDataManagementandComputerNetworks,August1979. (Alsoin Computer Networks, Vol. 4, No. 1, pp. 33-49, February 1980."
-- 16: R. W. Watson, "Timer-based Mechanisms in Reliable Transport Protocol Connection Management" Proc. Computer Network Protocols, sponsored by NBS andIEEE,Gaithersburg,Maryland,29May1980. (AlsoinComputer Networks 5 (1981) 47-56.
-- 17: R. W. Watson, "Interprocess Communication: Interface and End-to-End (Transport) Protocol Design Issues," Distributed Systems Architecture
-andImplementation: AnAdvancedCourse,Springer-Verlag,Berlin,NY,
-- 18: R. W. Watson, "Distributed System Architecture Model," Distributed Systems,ArchitectureandImplementation: AnAdvancedCourse, Springer-Verlag, Berlin, NY, 1981.
-- 19: R. W. Watson, "DeltaGram Protocol Specification," LLNL Working Document, Aug. 15, 1981.
-- 20: R. W. Watson, "Service Support Level Protocol Specification," LLNL Working Document, Aug. 15, 1981.
-- 21: R. W. Watson, "LINCS Interprocess Communication (Transport) Service Specification," LLNL Working Document, Aug. 15, 1981.
-- 22: N. Wirth, K. Jensen, PASCAL User Manual and Report; Springer-lVerlag, N.Y., Berlin, 1978.
+ - 3: J. Burruss, et al, "Specification of the Transport Protocol,"
+   NBS Report ICST/HLNP-81-1, Feb. 1981.
+
+ - 4: J. G. Fletcher, R. W. LWatson, "An Overview of the LINCS
+   Architecture," LLNL Working Document, July 9, 1981.
+
+ - 5: J. G. Fletcher, "LINCS Security Policy," LLNL Woirking Document,
+   July 15, 1981.
+
+ - 6: J. G. Fletcher, R. W. Watson, "Mechanisms for a Reliable
+   Timer-Based Protocol," Computer Networks, No. 4/5,
+   September/October, pp. 271-290. Also in Proceedings Computer
+   Network Protocols Symposium, Liege, Belgium, February 1978,
+   p. C5-1/C5-17.
+
+ - 7: L. Garlick, R. Rom, and J. Postel, "Reliable Host to Host
+   Protocols: Problems and Techniques," Proceedings 5th Data
+   Communications Symposium, IEEE/ACM, September 1977.
+
+ - 8: J. L. Grange, M. Gien, eds.. Flow Control in Computer Networks,
+   IFIP, North-Holland Publishing Co., 1979.
+
+ - 9: J. F. Haverty, R. D. Rettberg, "Inter-process Communication for
+   a Server in UNIX," Proceedings Compcon 78, September 1978,
+   pp. 312-315.
+
+ - 10: ISO, "Draft Connection-oriented Basic Transport Protocol
+   Specification," June 1981.
+
+ - 11: J. M. McQuillan, V. G. Cerf, Tutorial: A Practical View of
+   Computer Communications Protocols, IEEE Catalog No. EHO 137-0,
+   1978.
+
+ - 12: J. 6. Postel, "Specification of Internetwork Transmission
+   Control Protocol," TCP Version 4, Jan. 1980, available through
+   Defense Advanced Research Projects Agency, IPTO.
+
+ - 13: L. Pouzin and H. Zimmermann, "A Tutorial on Protocols,"
+   Proceedings IEEE, Vol.66, No.11,November1978,pp.1346-1370.
+
+ - 14: C. A. Sunshine and Y. K. Dalai, "Connection Management in
+   Transport Protocols," Computer Networks, Vol. 2, No. 6, 1978,
+   pp. 454-473.
+
+ - 15: R. W. Watson and J. G. Fletcher, "An Architecture for Support
+   of Network Operating System Services," Proceedings 4th Berkeley
+   Conference on
+   DistributedDataManagementandComputerNetworks,August1979. (Alsoin
+   Computer Networks, Vol. 4, No. 1, pp. 33-49, February 1980."
+
+ - 16: R. W. Watson, "Timer-based Mechanisms in Reliable Transport
+   Protocol Connection Management" Proc. Computer Network Protocols,
+   sponsored by NBS
+   andIEEE,Gaithersburg,Maryland,29May1980. (AlsoinComputer Networks 5
+   (1981) 47-56.
+
+ - 17: R. W. Watson, "Interprocess Communication: Interface and
+   End-to-End (Transport) Protocol Design Issues," Distributed Systems
+   Architecture andImplementation: AnAdvancedCourse,Springer-Verlag,Berlin,NY,
+
+ - 18: R. W. Watson, "Distributed System Architecture Model,"
+   Distributed Systems,ArchitectureandImplementation:
+   AnAdvancedCourse, Springer-Verlag, Berlin, NY, 1981.
+
+ - 19: R. W. Watson, "DeltaGram Protocol Specification," LLNL Working
+   Document, Aug. 15, 1981.
+
+ - 20: R. W. Watson, "Service Support Level Protocol Specification,"
+   LLNL Working Document, Aug. 15, 1981.
+
+ - 21: R. W. Watson, "LINCS Interprocess Communication (Transport)
+   Service Specification," LLNL Working Document, Aug. 15, 1981.
+
+ - 22: N. Wirth, K. Jensen, PASCAL User Manual and Report;
+   Springer-lVerlag, N.Y., Berlin, 1978.
 
 # APPENDIX A Notes on Timer Values and Rules
 
