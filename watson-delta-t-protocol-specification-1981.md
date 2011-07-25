@@ -14,7 +14,8 @@ h4:before {content: counter(counter-h1) "." counter(counter-h2) "." counter(coun
 </head>
 
 (Text extracted from PDF and reformatted as Markdown July 23 2011 by
-Tony Garnock-Jones. TODO: Proof-read the text for OCR errors
+Tony Garnock-Jones. I've tried to reproduce the ASCII-art as
+faithfully as possible. TODO: Proof-read the text for OCR errors
 etc. TODO: Reconstruct the ASCII art. TODO: Reconstruct the
 source-code snippets.)
 
@@ -60,7 +61,7 @@ December 4, 1981
 # Introduction
 
 This document is one of a series describing protocols associated with
-the Uvermore interactive Network Communication System (LINCS)
+the Livermore interactive Network Communication System (LINCS)
 hierarchical architecture [4,15,18]. At the heart of LINCS is its
 basic interprocess communication (LINCS-IPC) service [21]. LINCS-IPC
 defines a reliable, flow controlled, full duplex, uninterpreted,
@@ -110,25 +111,25 @@ Delta-t [21]. The next higher level interface used in this
 specification is a lower level interface internal to the LINCS-IPC
 layer.
 
-## Adoressing
+## Addressing
 
 Communication within the LINCS architecture takes place between
-ports. Ports are iaentified by 64 bit LIICS addresses. Ports are bound
+ports. Ports are identified by 64 bit LINCS addresses. Ports are bound
 to processes. Port to process binding is a higher level issue of no
 concern to Delta-t. Actual data movement between ports is supported by
 the Network layer (DeltaGram) protocol. Therefore no additional
 addressing structure is provided by Delta-t.
 
-## Delta-tAssociation
+## Delta-t Association
 
 An unordered port pair defines a full-duplex data channel called an
 association. Delta-t detects and recovers from lost, duplicated, and
 missequenced data. Damaged data is detected and discarded (lost) by
 the Network layer. Delta-t labels data bits with a protection level
-and optionally also with B and/or E synchronization marks (see
-Section2.6). Internally Delta-t also labels bits with a sequence
-number, version, lifetime, and other control information. Data
-transfer on an association is flow controlled.
+and optionally also with B and/or E synchronization marks (see Section
+2.6). Internally Delta-t also labels bits with a sequence number,
+version, lifetime, and other control information. Data transfer on an
+association is flow controlled.
 
 The state information at each end necessary to provide these services
 logically always exists for all possible associations (permanent
@@ -150,7 +151,7 @@ layer which enforces an appropriate protection policy
 [5,19]. Encryption, if required to convert untrusted links (or
 subnetworks) connecting trusted nodes into trusted links, is assumed
 to take place at the Link level of the LINCS architecture. Receiver
-buffer space is protected by association identifier outsioe Delta-t
+buffer space is protected by association identifier outside Delta-t
 within LINCS-IPC (see Appendix B). Additional access control services
 are defined at higher levels of the architecture.
 
@@ -177,39 +178,37 @@ acknowledgment (Nak) is also provided as an efficiency and diagnostic
 aid, although it is not essential to correct protocol operation. The
 Delta-t assurance mechanisms are now outlined.
 
-### LostPackets
+### Lost Packets
 
 Delta-t detects and recovers from lost packets by positive
 acknowledgment and retransmission. The origin transmits a packet and
 then waits an interval for a positive acknowledgment (Ack). This
 interval is usually slightly longer than the average round trip time
 for a packet and its Ack to be generated and traverse the network. If
-an Ack is not forthcoming in that interval, the
-unacknowledgeopacketisretransmitted. Ifnopositiveacknowledgmentis
-received after attempting some number of retransmissions (giveup
-time), an error is reporteo to the user with an indication of the
-successfully Acked data and of data transmitted but not Acked. A
-giveup timeout can result through failure of data to be delivered or
-failure of Acks to be returned. Delta-t level information cannot
-Determine which case occurred. Either case could occur from an
-end-node computer crash or serious network problem such as a
-partition. A higher-level recovery mechanism, using conventions on the
-B/E marks or higher-level delimiters, is required if the ambiguity
-needs to be removed. Delta-t has been designed to limit the cases
-where this ambiguity can occur to situations such as end-node system
-crashes and serious network faults which are outside of its ability to
-detect and recover.
+an Ack is not forthcoming in that interval, the unacknowledged packet
+is retransmitted. If no positive acknowledgment is received after
+attempting some number of retransmissions (giveup time), an error is
+reported to the user with an indication of the successfully Acked data
+and of data transmitted but not Acked. A giveup timeout can result
+through failure of data to be delivered or failure of Acks to be
+returned. Delta-t level information cannot determine which case
+occurred. Either case could occur from an end-node computer crash or
+serious network problem such as a partition. A higher-level recovery
+mechanism, using conventions on the B/E marks or higher-level
+delimiters, is required if the ambiguity needs to be removed. Delta-t
+has been designed to limit the cases where this ambiguity can occur to
+situations such as end-node system crashes and serious network faults
+which are outside of its ability to detect and recover.
 
 The choice of retransmission interval is an important factor affecting
 average packet delay and network efficiency. If the interval is too
-long,
-largeaveragedelayscanresult. Iftheintervalistooshort,averagedelay may
-be less, but network efficiency is decreased due to the possibility
-that packets may be retransmitted unnecessarily. This choice is
-complicated in an environment wnere average delay is quite route
-dependent.
+long, large average delays can result. If the interval is too short,
+average delay may be less, but network efficiency is decreased due to
+the possibility that packets may be retransmitted unnecessarily. This
+choice is complicated in an environment where average delay is quite
+route dependent.
 
-If a packet is Detected as damaged, if its lifetime expires, or if
+If a packet is detected as damaged, if its lifetime expires, or if
 another delivery problem exists within the routing network or at the
 destination, a Nak packet is returned to the origin. This information
 may be used to trigger retransmission and may be recorded as a hint
@@ -219,13 +218,12 @@ An acknowledgment mechanism is based on being able to identify the
 units acknowledged. In Delta-t bits are numbered sequentially with a
 sequence number. An Ack indicates the SN of the next bit the receiver
 expects to receive. The acknowledged SN (ASN) implies acknowledgment
-of all previous
-SNs. Therefore,ifanAckislost,Acksofsucceedingbitsacknowledge preceding
-bits. Similarly, duplication of Acks will cause no difficulty because
-they just confirm what is already known.
+of all previous SNs. Therefore, if an Ack is lost, Acks of succeeding
+bits acknowledge preceding bits. Similarly, duplication of Acks will
+cause no difficulty because they just confirm what is already known.
 
 The size of the field chosen to represent SNs is finite and therefore
-SN arithmetic is performed modulo 2"^, where n is the number of bits
+SN arithmetic is performed modulo $2^n$, where n is the number of bits
 in the SN field. In Delta-t n = 32. Because SNs wrap around, care must
 be taken to avoid having two different bits or their Acks with the
 same SN in the network at once. Because Naks are used strictly as an
@@ -240,7 +238,7 @@ bits are transmitted at the maximum rate even while retransmission
 takes place, the following inequality must be satisfied to meet the
 above unique SN condition:
 
-2n>(2*^PL + R + A)T.
+$2^n > (2*MPL + R + A)T$.
 
 This inequality assures that a sender generating SNs at the maximum
 rate will not reuse an SN until it is guaranteed that an SN and any
@@ -250,7 +248,7 @@ Acks of it have arrived or no longer exist in the network.
 
 SNs are also used for duplicate detection. At any point in time the
 receiver knows what SN it is expecting next. We call this SN the
-l_eft-window-jedge (LWE), because at any point in time, for assurance
+left-window-edge (LWE), because at any point in time, for assurance
 and flow control reasons, the receiver is only willing to accept bits
 with SNs within a particular range called the acceptance window. SNs
 less than the LWE are duplicates [17]. Duplicates are discarded and
@@ -263,29 +261,29 @@ A missequenced bit is one with an SN not equal to the LWE but within
 the acceptance window. Two implementation choices exist for handling a
 missequenced bit:
 
-  (1) itcanbeheld(itslifetimecontinuescountingdown)untilits
+  (1) it can be held (its lifetime continues counting down) until its
       predecessors arrive, on the assumption they will follow shortly
       and all can be Acked before the sender's retransmission interval
       elapses, thus increasing efficiency, or
 
-  (2) itcanbediscarded,withretransmissionsprovidingforcorrect ordering
-      thus simplifying the implementation.
+  (2) it can be discarded, with retransmissions providing for correct
+      ordering thus simplifying the implementation.
 
 The model of Section 6 assumes the latter.
 
-## SynchronizationIncludingConnectionManagement
+## Synchronization Including Connection Management
 
 Delta-t's synchronization services support bits being labeled with B
 and E marks (B-bit and E-bit respectively) and a guarantee of
 sequenced data delivery. Use of B- and E-bits is determined by higher
-level convention., The purpose of the B-bit is to label the beginning
-of a higher level data unit,
-suchasamessage[20]. Itprovidesasynchronizationmarkinthedatastream
-where parsing or other operation can safely begin. This function is
-provided in other transport protocols by explicit connection opening
-packet exchanges. The purpose of the E-bit is twofold, to label the
-end of a higher level data unit and to indicate a required higher
-level wakeup point.
+level convention. The purpose of the B-bit is to label the beginning
+of a higher level data unit, such as a message [20]. It provides a
+synchronization mark in the data stream where parsing or other
+operation can safely begin. This function is provided in other
+transport protocols by explicit connection opening packet
+exchanges. The purpose of the E-bit is twofold, to label the end of a
+higher level data unit and to indicate a required higher level wakeup
+point.
 
 Internally Delta-t supports sequenced data delivery using SNs. Delta-t
 provides reliable management and synchronization of the state at each
@@ -295,29 +293,30 @@ A. Here we briefly outline the simple timer mechanism used by Delta-t
 for connection management.
 
 Conceptually, there are three main phases in connection management
-(explicitphaseseparationisnotrequiredinDelta-t): (1)initializing
-(opening) the connection records at each end to nondefault values, (2)
-evolving the state during ongoing data transfer, and (3) resetting or
-terminating (closing) state information when no further data needs to
-be transferred. Duringthereliableopeningofatransportprotocolassurance
-connection, the main problem is establishing initial SNs meeting the
-following opening conditions:
+(explicit phase separation is not required in Delta-t): (1)
+initializing (opening) the connection records at each end to
+nondefault values, (2) evolving the state during ongoing data
+transfer, and (3) resetting or terminating (closing) state information
+when no further data needs to be transferred. During the reliable
+opening of a transport protocol assurance connection, the main problem
+is establishing initial SNs meeting the following opening conditions:
 
-01: Ifnoconnectionstateexistsoritisinthedefaultstate, (connection
-closed) and the receiver is willing to receive, then no packets from a
-previous connection should cause a connection to be initialized and
-duplicate data to be accepted.
+O1: If no connection state exists or it is in the default state,
+(connection closed) and the receiver is willing to receive, then no
+packets from a previous connection should cause a connection to be
+initialized and duplicate data to be accepted.
 
-02: Ifaconnectionexists,thennopacketsfromapreviousconnection should be
-acceptable within the current connection.
+O2: If a connection exists, then no packets from a previous connection
+should be acceptable within the current connection.
 
 In order to avoid ambiguity about the state of data sent, connections
 should be closed in a way allowing each side to know that the other
 side has received any data sent (a graceful close). This implies two
 closing conditions:
 
-CI: Areceivingsidemustnotcloseuntilithasreceivedallofa sender's
-possible retransmissions and can unambiguously respond to them, and
+C1: A receiving side must not close until it has received all of a
+sender's possible retransmissions and can unambiguously respond to
+them, and
 
 C2: A sending side must not close until it has received an Ack for all
 its transmitted data or allowed time for an Ack of its final
@@ -330,18 +329,18 @@ died out, information flow is smooth (all bits sent that could be
 acceptable are accepted), and all transmissions, retransmissions, and
 Acks have arrived at their destination, if they are ever going to
 arrive. The connection records at each end of an association are under
-control of a receive-timer (Rtimer) and send-timer
-(Stimer)respectively. Nosynchronizationbetweentimersisrequired,other
+control of a receive-timer (Rtimer) and send-timer (Stimer)
+respectively. No synchronization between timers is required, other
 than that provided by the sending and receiving of packets, but it is
 assumed that the timers at each end run approximately at the same
-rate; that is, over an interval of 3At (see below for At definition)
-there is no significant drift. For reasonable At intervals (less than
+rate; that is, over an interval of 3Δt (see below for Δt definition)
+there is no significant drift. For reasonable Δt intervals (less than
 1 to 2 minutes) this assumption is easily satisfied with current clock
 specifications. The Rtimer interval guarantees that the receiver
 maintains its connection record long enough to (1) detect all
 duplicates and (2) guarantee that acceptable SN's will reach the
 receiver. While Rtimer > 0 the receiver will only accept packets with
-SNs in its acceptance window. The Stimer interval must be such tnat
+SNs in its acceptance window. The Stimer interval must be such that
 (1) the sender's connection record be maintained as long or longer
 than the receiver's, in order for the sender to be sure to generate
 acceptable SNs, (2) it is long enough to recognize all Acks that it
@@ -351,41 +350,42 @@ packets and their Acks using that SN have died.
 The rules for timer intervals, control of the timers, setting of
 packet header control flags, SN selection, and packet acceptance are
 developed in [6] and Appendix A. They are quite simple. We define the
-quantity.
+quantity,
 
-At = MPL + R + A, where MPL is a worst case estimate of the time for
+Δt = MPL + R + A, where MPL is a worst case estimate of the time for
 traversing the network and R and A are as defined earlier.
 
 Safe values for use in initializing the timers are:
 
-receive-time = 2*At
-send-time = 3*At.
+    receive-time = 2*Δt
+    send-time = 3*Δt.
 
 R.l) Stimer is refreshed whenever a new SN (i.e. a new data bit or
-Rendezvous packet) or reliable-Ack is sent (see Section 2.7.3 for
-discussion of rendezvous and reliable-Acks).
+     Rendezvous packet) or reliable-Ack is sent (see Section 2.7.3 for
+     discussion of rendezvous and reliable-Acks).
 
-R.2) Once a bit b^ has had its maximum retransmission time (or
-equivalently maximum number of retransmissions) no new bits can be
-transmitted until bi has been Acked; bits b^+k which had previously
-been transmitted can continue being retransmitted until their maximum
-retransmission time.
+R.2) Once a bit $b_i$ has had its maximum retransmission time (or
+     equivalently maximum number of retransmissions) no new bits can
+     be transmitted until $b_i$ has been Acked; bits $b_{i+k}$ which
+     had previously been transmitted can continue being retransmitted
+     until their maximum retransmission time.
 
 R.3) Rtimer is refreshed whenever a new SN is accepted or data
-overflow occurs.
+     overflow occurs.
 
 R.4) When Rtimer expires, the receive state is reset to its default
-values.
+     values.
 
 R.5) Once a bit or Rendezvous or reliable-Ack is initially transmitted
-its lifetime is set equal to At and starts counting down.
+     its lifetime is set equal to Δt and starts counting down.
 
 R.6) At the point an SN is tested for acceptance, the lifetime of any
-Ack packet generated is set equal to At and begins counting down.
+     Ack packet generated is set equal to Δt and begins counting down.
 
 R.7) When Stimer expires (giveup timeout) the send state is reset to
-its default values, any initial SN can be used when new data needs
-sending, and if unAcked SNs exist a giveup error is reported.
+     its default values, any initial SN can be used when new data
+     needs sending, and if unAcked SNs exist a giveup error is
+     reported.
 
 Delta-t packet headers label their first bits with a Data-Run-Flag
 (Pdrf), set 1 in packets sent when all previously sent SNs have been
@@ -399,7 +399,7 @@ is to be sent. If the Stimer is zero, then any initial SN can be used
 because no packets for the association exist in the network.
 
 With the above mechanism no exchanges of packets are required to
-reliably open or close connections. A sender's connectionrecord is
+reliably open or close connections. A sender's connection record is
 "opened" automatically, i.e., holds nondefault state, when SNs are
 sent. A receiver's connection record is "opened" automatically when
 acceptable SNs are received. Each record is returned to its default
@@ -409,48 +409,56 @@ automatically maintained only when needed. Also no problems exist when
 both ends of an association simultaneously begin sending. Figure 2.1
 illustrates two common cases of packet exchange and CR management.
 
-CR in default state
-Set Stimer
-I
-CR in non- default state (for 3At)
-I
-Stimer + expires
-CR in default I time state 4-
-CR in default state
-Set Rtimermer
-CR in non- default state
-Sender CR in default
-Receiver CR in default
-state Set Stimer
-Set Stimer
-CR in non- default state
-Set Stimer
-3At
-Stimer expires
-CR in default state
-state Set Rtimer
-Set Rtimer
-CR in non- default state
-Set Rtimer
-2AtI 4- Rtimer expires
-CR in default state
-Sender
-Receiver
-Data: SN,Pdrf=l,mbitsdata Ack: SN+m
-(SN can be any value)
+                Sender                                Receiver
 
-(a) Single Data Packet and Ack Exchange
+    CR in default  |                                      |  CR in default
+        state      |     Data:  SN, Pdrf=1, m bits data   |      state
+    Set Stimer___  | ____________________________________ |    ___ Set Rtimer
+              ^    |                                      |  ^
+              |    |              Ack:  SN+m              |  |
+                   | ____________________________________ |
+                  _|_                                    _|_
+    CR in non-     |        (SN can be any value)         |       CR in non-
+    default state  |                                      |     default state
+    (for 3Δt)      |                                      |  |   (for 2Δt)
+                  _|_                                    _|_ v Rtimer expires
+               |   |                                      |  CR in default
+    Stimer     v   |                                      |      state
+    expires   ___ _|_                                     |
+                   |                                      |
+    CR in default  |  time                                |  time
+        state      v                                      v
 
-Data: SNl, Pdrf=l, ii bits data Data: SNl+il,Pdrf=0,mbitsdata
-MT: SNl+£+m Data:	SNl+Um, Pdrf=l, n bits data
-Ack: SNl+il+m+n (SNl can be any value)
-4- time
-I j;^ Rtimer expires CR in default
-time
-4- time
-(for 2At) state
+                (a)  Single Data Packet and Ack Exchange
 
-(b) Example Multiple Data Packet Exchange
+                 Sender                               Receiver
+    CR in default  |                                      |  CR in default
+        state      |                                      |      state
+                   |    Data:  SN1, Pdrf=1, l bits data   |
+     Set Stimer    | _____________________________________|    Set Rtimer
+                   |                                      |
+                   | Data:  SN1+l, Pdrf=0, m bits data    |
+     Set Stimer    | _____________________________________|    Set Rtimer
+                   |      Ack:  SN1+l+m                   |
+                   | _____________________________________|
+    CR in non-     |                                      |  CR in non-
+     default state | Data:  SN1+l+m, Pdrf=1, n bits data  |   default state
+                   | _____________________________________|
+    Set Stimer     |                                      |  Set Rtimer
+               ^   |        Ack:  SN1+l+m+n               |  ^
+               |   | _____________________________________|  |
+                   |                                      |
+              3Δt  |       (SN1 can be any value)         |  2Δt
+                   |                                      |    |
+                   |                                      |   v  Rtimer expires
+                   |                                      |_____
+    Stimer expires |                                      |
+             _____ |                                      |  CR in default
+                   |                                      |      state
+    CR in default  |                                      |
+        state      v   time                               v   time
+
+                     (b) Example Multiple Data Packet Exchange
 
 Figure 2.1. Example Packet Exchanges and CR State (for simplicity data
 exchange in only one direction shown.)
@@ -478,8 +486,8 @@ reflect the nature of the several resources being protected (e.g.,
 user and system buffers, CPU cycles, interface access) and yet allows
 efficient transmission on an association, independent of the widely
 varying implementation choices possible. Until we feel we understand
-the issues better we have chosen for this version of
-Delta-tthesimplewindoworcreditflowcontrolmechanism. Itworksas follows.
+the issues better we have chosen for this version of Delta-t the
+simple window or credit flow control mechanism. It works as follows.
 
 Each Ack packet contains a window (credit) field indicating the
 additional number of bits of data, relative to the ASN, that the
@@ -524,13 +532,14 @@ buffer once an E-bit is placed in it, thus invalidating any previously
 advertised window.
 
 Higher level LINCS conventions restrict use of message boundaries to
-only definewakeuppointsinthedatastream. InaLINCScontrolstreamthisisa
-point where an action, and normally a reply, is expected and,
-therefore, pipelining of control messages is not required. Data is
-transferred as specified in a control message, in a single data
-message. Data message pipelining is not expected. Therefore, the pause
-in data sending resulting from assuming a zero window when an E-bit is
-sent will not cause a performance degradation.
+only define wakeup points in the data stream. In a LINCS control
+stream this is a point where an action, and normally a reply, is
+expected and, therefore, pipelining of control messages is not
+required. Data is transferred as specified in a control message, in a
+single data message. Data message pipelining is not
+expected. Therefore, the pause in data sending resulting from assuming
+a zero window when an E-bit is sent will not cause a performance
+degradation.
 
 The discussion to follow contains more motivation than that for other
 mechanisms because the issues are not documented elsewhere. A question
@@ -578,37 +587,54 @@ the sender's state indicates that all data sent have been Acked, there
 is data to send, and a zero window exists, it sends what is called a
 Rendezvous packet indicating that it wants to be informed
 (rendezvous-at-the-sender) when the window goes positive (which might
-be imnediately). The Rendezvous packet contains a field that consumes
+be immediately). The Rendezvous packet contains a field that consumes
 SN space protecting it against duplication or missequencing. Since it
 is only sent when all previous data have been Acked, none of the usual
 difficulties that can result from including control information in SN
-space exist [7], The Rendezvous packet is retransmitted until Acked
+space exist [7]. The Rendezvous packet is retransmitted until Acked
 (or its retransmission interval expires), thus protecting it against
 loss. When the receiver's input window opens and it is in the
 rendezvous-at-sender state, it will send a specially labeled Ack
 packet and at retry intervals retransmit this packet until it receives
 an acceptable Data packet (which in effect "Acks" it), thus protecting
-the "window opening" Ack
-(reliable-Ack)againstloss. DuplicationormissequencingoftheseAcksat
-most cause extra packet exchanges and are not assurance hazards. We
-now discuss issues associated with window overrun.
+the "window opening" Ack (reliable-Ack) against loss. Duplication or
+missequencing of these Acks at most cause extra packet exchanges and
+are not assurance hazards. We now discuss issues associated with
+window overrun.
 
-Senoer	Receiver p bits to
-send p<m
-(CR could expire)
-Send m bits of data in assumed window n(m<n)
-accept m bits Ack m bits, report zero window	all buffers used
-Send Rendezvous Packet
-reliable-Ack reports new window = k
-send up to k bits of data (also Acks reliable-Ack)
-Ack k bits of data
-window zero
-receiver remembers sender wants reliable-Ack when window opens.
-(CR could expire)
-additional buffer space allocated.
+            Sender                                      Receiver
+               |                                               |
+    p bits to  |                                               |
+    send p<m   | Send m bits of data in assumed window n(m<n)  |
+               | ____________________________________________> |
+               |                                               |  accept m bits
+               |      Ack m bits, report zero window           |  all buffers used
+               |                                               |  window zero
+               | <____________________________________________ |
+               |                                               |
+               |        Send Rendezvous Packet                 |
+               | ____________________________________________> |
+               |                                               | receiver remembers
+               |                                               | sender wants
+               |                                               | reliable-Ack when
+    (CR could  |                                               | window opens.
+      expire)  |                                               | (CR could expire)
+               |                                               |
+               |                                               | additional buffer
+               |                                               | space allocated.
+               |    reliable-Ack reports new window = k        |
+               | <____________________________________________ |
+               |                                               |
+               |    send up to k bits of data (also Acks       |
+               |               reliable-Ack)                   |
+               | ____________________________________________> |
+               |                                               |
+               |            Ack k bits of data                 |
+               | <____________________________________________ |
+               |                                               |
 
-Figure 2.2. Rendezvous-at-sender Packet Exchange without Overflow.
-
+    Figure 2.2.  Rendezvous-at-sender Packet Exchange without Overflow.
+                                   
 Window overrun can occur because (1) the receiver reneged on an
 advertised window due, for example, to buffer withdrawal or because it
 was advertising windows based on a statistical buffer management
@@ -626,7 +652,7 @@ reported. The sending user does not know whether or not these bits
 were delivered, when in fact the receiving protocol module knew they
 were not. The user may then unnecessarily enter an expensive higher
 level error recovery procedure to resolve the ambiguity. Because the
-input window opening delay could be much longer than At if the window
+input window opening delay could be much longer than Δt if the window
 advertised is based on user space and the user is subject to long
 scheduling delays, unnecessary ambiguous situations could be frequent.
 
@@ -668,30 +694,44 @@ to it that will yield an SN larger than any overflow SN sent. The
 receiver then translates its input window SNs by the offset and
 reenters the Data packet acceptance state.
 
-reset over- flow bits as if never sent
-wait for window to open
-(CR could expire)
-Rendezvous:	SN+k,consume m-k SN's
-enter accept-data-state
-Sender	Receiver Data: SN, m bits into assumed window n (m<n) I window k<m
-1enter don't- Ack: SN+k, indicate overflow and zero window 1 accept data state
-Ack:
-SN+m, zero window
-window opens reliable-Ack: window n	(could be long
-time and CR return to default state)
-Data: senduptonbits(Acksreliable-Ack)1
-Ack: data
-• • •
-1
+               Sender                                        Receiver
+                 |Data:  SN, m bits into assumed window n (m<n) | window k<m
+                 |______________________________________________|
+                 |                                              | enter don't-
+                 |Ack:  SN+k, indicate overflow and zero window | accept data state
+                 |______________________________________________|
+    reset over-  |                                              |
+    flow bits as |                                              |
+    if never sent|  Rendezvous:  SN+k, consume m-k SN's         |
+                 |______________________________________________| enter
+    wait for     |                                              | accept-data-state
+    window to    |       Ack:  SN+m, zero window                |
+    open         |                                              |
+                 |______________________________________________|
+                 |                                              |
+    (CR could    |                                              | window opens
+      expire)    |       reliable-Ack:  window n                |(could be long
+                 |                                              | time and CR
+                 |                                              | return to default
+                 |                                              | state)
+                 |______________________________________________|
+                 | Data:  send up to n bits (Acks reliable-Ack) |
+                 |______________________________________________|
+                 |               Ack:  data                     |
+                 |______________________________________________|
+                 |                                              |
+                 |                   .                          |
+                 |                   .                          |
+                 |                   .                          |
 
-Figure 2.3. Rendezvous-at-sender with Overflow.
+     Figure 2.3. Rendezvous-at-sender with Overflow.
 
 The question yet remains of what strategy the receiver should use in
 deciding what size input window to advertise. This is a very
 implementation dependent issue. Some suggestions are given in Appendix
 B.
 
-## DiagnosticsandMeasurement
+## Diagnostics and Measurement
 
 The only diagnostic and measurement service offered by this version of
 Delta-t is the generation of Nak packets when a packet's lifetime has
@@ -699,7 +739,7 @@ expired and optionally when out-of-sequence packets are
 rejected. Trace and timestamp routing services are offered by
 DeltaGram.
 
-## ServicesNotinDelta-t
+## Services Not in Delta-t
 
 Many transport protocols support two channels per association, a
 normal data channel and a second channel called variously an
@@ -726,7 +766,7 @@ provide for future evolution.
 Delta-t as defined here is assumed to operate on top of a Network
 layer providing the services below.
 
-## DataObjectsandAddressing
+## Data Objects and Addressing
 
 Delta-t assumes that the Network layer provides a full duplex
 uninterpreted data channel between two ports, each identified by 64
@@ -741,7 +781,7 @@ layer where a routing level protection policy is assumed enforced
 ## Assurance
 
 Delta-t assumes that the Network layer is detecting and discarding
-damageo packets with a mechanism leaving no gaps in the protection.
+damaged packets with a mechanism leaving no gaps in the protection.
 
 Delta-t assumes that packet lifetime is bounded, that it can specify
 this bound, and that the receiving Delta-t end can obtain the assumed
@@ -764,74 +804,83 @@ Delta-t B and E bit labels.
 ## Control Information
 
 Certain control information used by Delta-t such as initial packet
-lifetime,mayalsobeusedbytheNetworkLayer. Itisassumedthatthis
-information can be conveyed in either direction across the interface.
+lifetime, may also be used by the Network Layer. It is assumed that
+this information can be conveyed in either direction across the
+interface.
 
 # Model of the Delta-t Environment
 
-## EnvironmentModel
+## Environment Model
 
-Delta-tsupportstheLINCS-IPCorrelatedservices[21]. AllIPC services are
-on an association basis.
+Delta-t supports the LINCS-IPC or related services [21]. All IPC
+services are on an association basis.
 
 Figure 4 illustrates the flow of information between remote user
-processesonanassociation. Ifthecommunicatingprocesseswerelocalthen
-layers l-4a would be replaced with a local transport mechanism.
+processes on an association. If the communicating processes were local
+then layers l-4a would be replaced with a local transport mechanism.
 
-1
-1 1
-1 1
-1 1 1
-1
-1 1
-Intermediate Origin Node	DeltaGram Nodes	Destination Node
-11 IPC-User	15	1	IPC-User	15
-1f
-4- T1 LINCS-IPC End	1	1 LINCS-IPC End	14
-Functions	|4b	1 Functions	1
-1 1 1
---1 1 1 Delta-t Level End 1	1 Delta-t Level End 1
-Functions	|4a	I Functions	14 1
-4- 1 Network Level	1	1	Network Level	r	T	Network Level	1
-DeltaGram Packet 1 1 DeltaGram Packet	1	1 DeltaGram Packet 1 Transport Functions |3 1 Transport Functions L3 1 Transport Functions 13
-1+1 4-111+ 11
-Link Level	12	1	Link Level	1	1	Link Level	12 1 t11211
-4- 1 + Channel	•	1	Channel	1	1	Channel
-Level	_1 1	Level	11 1	Level
-1
+                                      Intermediate
+         Origin Node                 DeltaGram Nodes         Destination Node
 
-Figure 4-1.	Information Flow Between Remote User Processes
+    ______________________                                 _______________________
+    |                    |                                 |                     |
+    |_____IPC-User_______|5                                |______IPC-User_______|5
+              |                                                      ^
+    __________v___________                                 __________|____________
+    |                    |                                 |                     |
+    |  LINCS-IPC End     |4b                               |  LINCS-IPC End      |4b
+    |    Functions       |                                 |   Functions         |
+    |                    |                                 |                     |
+    |--------------------|                                 |---------------------|
+    |                    |                                 |                     |
+    |  Delta-t Level End |                                 |  Delta-t Level End  |
+    |____Functions_______|4a                               |_____Functions_______|4a
+              |                                                       ^
+    __________v___________    ________________________     ___________|___________
+    |   Network Level    |    |    Network Level     |     |    Network Level    |
+    | DeltaGram Packet   |    |  DeltaGram Packet    |     |  DeltaGram Packet   |
+    |Transport_Functions_|3   |_Transport_Functions__| 3   |_Transport_Functions_|3
+              |                    ^        |                         ^
+    __________v___________    _____|________v_________     ___________|___________
+    |                    |    |                      |     |                     |
+    |____Link_Level______|2   |_____Link_Level_______| 2   |____Link_Level_______|2
+              |                    ^          |                    ^
+    __________v__________     _____|__________v________    ________|___________
+    |      Channel      |____ |      Channel         |__   |      Channel       |
+    |_______Level_______| 1   |_______Level__________| 1   |_______Level________| 1
+
+                Figure 4-1.  Information Flow Between Remote User Processes
 
 A specification requires a model of the environment in which the
-protocol istooperateandofthestructureoftheprotocolmoduleitself. This
-specification is based on a programming language procedure model. The
-procedures embody the desired response to external events (next higher
-level interface, timer, next lower level interface packet receipt) in
-terms of state transitions (changes to state variables) and output
-events (packets or signals generated and timers set). The programming
-language notation used is Pascal [22] with an exponentiation operator
-(**). Pascal was chosen because it is widely read and has most of the
-notation needed.
+protocol is to operate and of the structure of the protocol module
+itself. This specification is based on a programming language
+procedure model. The procedures embody the desired response to
+external events (next higher level interface, timer, next lower level
+interface packet receipt) in terms of state transitions (changes to
+state variables) and output events (packets or signals generated and
+timers set). The programming language notation used is Pascal [22]
+with an exponentiation operator (**). Pascal was chosen because it is
+widely read and has most of the notation needed.
 
 For the purposes of this specification we view the Delta-t environment
 as logically consisting of three asynchronously running processes
 which we call:
 
-  (1) User,
-  (2) IPC (embodying Delta-t) and
+  (1) User,  
+  (2) IPC (embodying Delta-t) and  
   (3) Link.
 
 The Network (DeltaGram) level is embodied as procedures in both the
 IPC and Link processes. We use the term process simply to indicate a
 locus of concurrent activity. The three processes could be quite
-different kinds of
-entitiesinagivenenvironment. Inmanyimplementationstheseentitiesmight
-just be sets of co-routines within the same module. In other
-environments there might be many User processes, several Link
-processes, and a single IPC process multiplexing many associations for
-one or more of these Users. These are implementation details outside
-this specification. Unambiguous behavior can be specified in terms of
-single User, IPC, and Link Protocol processes.
+different kinds of entities in a given environment. In many
+implementations these entities might just be sets of co-routines
+within the same module. In other environments there might be many User
+processes, several Link processes, and a single IPC process
+multiplexing many associations for one or more of these Users. These
+are implementation details outside this specification. Unambiguous
+behavior can be specified in terms of single User, IPC, and Link
+Protocol processes.
 
 The three processes communicate via shared data structures and wakeup
 signals, the latter undefined here. The data structure shared between
@@ -843,25 +892,33 @@ space. The data structure shared between the IPC and Link protocol
 processes consists of packet queues, and a Routing Table. The
 organization of the processes is shown in Figure 4.2.
 
-User Process
-I—signal— IUser-I User-I
-Link Process
-—signal—	I CI LPMIIl-channel-
-IApplic. System JI
-l~
-IMI
-1T DGM IPBMI
-1r
-1 OS services I
-JL
-___ j Process I Signal
--18-
-I Routing I |~| Table I-
-II
-I
-Packet Queues I —
+                                    _________________
+                                    |               |
+                                    |  OS services  |
+                                    |_______________|
+                                      IPC  |
+                                    Process| Signal
+                                   ________|________
+      User Process                 |    EIM        |           Link Process
+    ____________________           |               |           ____________
+    |        |         |---signal--|               |--signal---|     |  C |
+    | User-  |   User- |   _____   |               |           | LPM |  I |-channel-
+    | Applic.|  System |   | I |   |               |           |_____|__M_|
+    |________|_________|---| S |---|_______________|           |     |    |
+                           |_R_|   |       |   |   |           | DGM | PBM|
+                                   |Delta-t|PMB|DGM|           |_____|____|
+                                   |_______|___|___|              |     |
+                                             |   |  _________     |     |
+                                             |   |  |Routing|     |     |
+                                             |   |--| Table |-----|     |
+                                             |      |_______|           |
+                                             |                          |
+                                             |      _________________   |
+                                             |------| Packet Queues |---|
+                                                    |_______________|
 
-Figure4.2 ModelofaDelta-tEnvironment
+
+                       Figure 4.2  Model of a Delta-t Environment
 
 Logically the User process consists of two sets of procedures, the
 User-application procedures, and the User-system procedures. The
@@ -877,13 +934,10 @@ three levels of protocol:
 
  - The channel interface module (CIM) that interfaces to a lower level
    channel protocol,
-
  - The Link Protocol Module (LPM) that implements the Link protocol
    proper,
-
  - The DeltaGram Module (DGM) that implements the DeltaGram (Network
    level) service, and
-
  - The Packet Buffer Management module (PBM) that manages a pool of
    packet buffers and the Packet Queues.
 
@@ -903,7 +957,6 @@ DGM and PBM:
    the details of a specific LINCS-IPC user interface, buffer
    management, synchronization mechanism, operating system, and lower
    level protocol environment.
-
  - The Delta-t module providing end-to-end services between remote IPC
    users.
 
@@ -917,7 +970,9 @@ transfer mechanisms for efficiency. The IPC process signals the Link
 process when packets need sending, and it signals the User process
 when Sends or Receives complete.
 
-## EventHandling
+<!-- Here -->
+
+## Event Handling
 
 There are three sets of asynchronous events that affect Delta-t
 operation (1) IPC user interface (Sends, Receives, Aborts), (2) Timer,
@@ -998,8 +1053,8 @@ DeltaGram.
 Graphically a DeltaGram packet has the following format when laid out
 in 32 bit blocks.
 
-O'-l 2-3 A-6 7 8-15 16-19 20-23 24-31 iPverl Ptypel PresllPdnl PhdrChksum	IPprtctLevl PAtexp |Plifetime
-IIIII !\I 1	Fia
+O'-l 2-3 A-6 7 8-15 16-19 20-23 24-31 iPverl Ptypel PresllPdnl PhdrChksum       IPprtctLevl PAtexp |Plifetime
+IIIII !\I 1     Fia
 PdestAddr PdestAddr - continued
 PoriginAddr PoriginAddr - continued
 Ptdf - (packet type dependent field) Ptdf - continued
@@ -1077,12 +1132,12 @@ Ptdf: The Ptdf field for a DeltaGram Data packet has the following
 format. The formats of the DeltaGram Pfbl, Plbl, and Pabl fields can
 be defined by Delta-t for its bit labeling use.
 
-0 1516 2324 31 1	1 Pfbl 1 Plbl 1 1	PoataChksum	|	|	1	1
-2 4	1112|Pres2|Pb|Pdrf|Pres3 1Pe1 1111 1
+0 1516 2324 31 1        1 Pfbl 1 Plbl 1 1       PoataChksum     |       |       1       1
+2 4     1112|Pres2|Pb|Pdrf|Pres3 1Pe1 1111 1
 Pdl
-1 1 1	iPAtver 1 11 1	PuserData	1
-iPdslPtl 1 1 i1	Pres41	1
-1 Pabl	1
+1 1 1   iPAtver 1 11 1  PuserData       1
+iPdslPtl 1 1 i1 Pres41  1
+1 Pabl  1
 
 PdataChksum: Set to checksum of PuserData (see DeltaGram specification
 for algorithm).
@@ -1127,7 +1182,7 @@ Pid: SettotheAcksequencenumber,theSNofthenextexpectedbit (the
 receiver'sleft-window-edge).
 
 Ptdf
-0 1	Pres5
+0 1     Pres5
 1 10 1112
 111 1Pres6 IPAtver |
 111
@@ -1168,7 +1223,7 @@ of the Ptdf field of this type packet is the following.
 07 31
 1\1 IPsubtype ISubtypeDependent(Std)l
 I\I 1\\1
-I Std	IPAtver IStd	I
+I Std   IPAtver IStd    I
 J\\I
 
 Psubtype: definesthecontrolsubtype.
@@ -1190,9 +1245,9 @@ Pid: Sequencenumberofnextdatabitreceiveriscurrentlyknownto expect.
 
 Ptdf
 
-0 78	2324 31
-1i mI I 1 I Pres7	IdIPresS I II IrII I I 10 1112 IfI I
-I\\I IPresscontinuedIPAtver I	Psno	I
+0 78    2324 31
+1i mI I 1 I Pres7       IdIPresS I II IrII I I 10 1112 IfI I
+I\\I IPresscontinuedIPAtver I   Psno    I
 JI\I
 
 Pres7: 15bitsreserved,set0.
@@ -1210,7 +1265,7 @@ Psno: SN offset used by receiver to readjust its next expected SN.
 0 31
 1PnakReason iPnakRes 1 1112
 1 PnakRes
-1 1	Pdl
+1 1     Pdl
 1
 
 No special Delta-t format.
@@ -1517,7 +1572,7 @@ initialization, discussed below.
 
 Deadstart or crash recovery requires that all state records (or just
 those for damaged associations) be reset to their default values. An
-interval 3At must expire on a damaged association (crash with loss of
+interval 3Δt must expire on a damaged association (crash with loss of
 memory) before sending any type of packet (see Appendix A). No Ack or
 Nak packet should be accepted before data has been sent. This assures
 that the destination's Rtimer will time out (removing half open
@@ -1532,9 +1587,9 @@ constant AAtexp (see Section 6.2.5).)
 
 ### ReceiverInitialization
 
-Receivers must wait at least At after an initialization before
+Receivers must wait at least Δt after an initialization before
 accepting any Rendezvous or Data packets to protect against duplicates
-(see AppendixA). TheAtusedisthesender'sand,withlossofmemory,the
+(see AppendixA). TheΔtusedisthesender'sand,withlossofmemory,the
 receiver will not know it until a packet arrives. Therefore, the
 receive wait interval is computed from PAtexp in the packet header
 relative to the Aidt field in the CR (see Section 6.2.5). This
@@ -1552,7 +1607,7 @@ initialized to default values when the CR is created.
 CR= {ConnectionRecord}record Aassoc:AR; {association record defined in Section 6.3}
 AmaxPktSize, {max packet size for this association, set from global state when the CR is created.}
 AAtexp, {parameter set from global state to be used to compute the initial value of the packet Plifetime field, placed in the packet
-PAtexp fields, and used to derive the value for Stimer. A given implementation chooses AAtexp to create an appropriate At. At isthesum.At=R+MPL+A,where
+PAtexp fields, and used to derive the value for Stimer. A given implementation chooses AAtexp to create an appropriate Δt. Δt isthesum.Δt=R+MPL+A,where
 R= time sender normally expects to keep retransmiting (this time would usually be n average-round trip times).
 MPL = an estimate of worst case acceptable network-travel-time. It should be a value assuming queuing and processing in the longest expected chain of intermediate store and forward nodes.
 A= Maximum expected time until the receiver will Ack an SN. The value is a function of receiver's implementation or some reasonable worst case estimate such as a few seconds. A standard upper bound on A will be established.}
@@ -1562,20 +1617,20 @@ Aidt:DateTime; {The dateTime of the last initialization of the environment for t
 {Send variables set to default values when the CR is initialized}
 Stimer, {Purpose: Stimer serves two functions, assurance and smooth data flow. The assurance function of the Stimer is also twofold: (1) to
 assure that the CR is maintained until all Acks will be received if they are ever going to arrive (graceful close, only a remote end crash or network partition would prevent their timely arrival), (2) to assure that no SN is reused with new data until all packets containing it have died. The smooth data flow function guarantees that the sender's CR is active longer than the peer's CR so that acceptable SNs are generated. No harm results if Stimer is allowed to run beyond its expiration time. Its purpose could be compromised if it is allowed to expire early. When Stimer expires and Sou^Sowle an error condition exists (see
-below). Default:	= 0. When changed: Stimer is set when a new sequence number (SN) is sent
+below). Default:        = 0. When changed: Stimer is set when a new sequence number (SN) is sent
 in Data (see procedure sendData) or Rendezvous packets (see procedure sendRendezvous), or a reliable-Ack
 packet is sent requiring a Data packet as an "Ack" (see procedure sendAck). It is set to the dateTime it is to expire. The Stimer interval is 3*2**AAtexp. Stimer is reset to 0 when it expires (see procedure StimerExpired).}
 StimeStamp:DateTime; {Purpose: StimeStamp is the dateTime of receipt of a Data or
-Rendezvous packet requiring an Ack packet. This is a model dependent variable required here because an Ack is not necessarily generated immediately when Data or Rendezvous packets are tested for acceptance. The EIM must schedule a DtAck call to cause Delta-t to update the receive window (Riwre-Riwle) and generate the Ack. If no delay were assumed between the return from a DtPktRcvd call and the issuing of the DtAck, this variable would not be needed. The requirement that must be met for correct Delta-t operation is that there must be no gap between the timing of the lifetimes of the latest SN and its Ack. The condition to be met is that the combined lifetime of the latest SN received in a Data or Rendezvous packet and its Ack must not exceed 2*2**PAtexp (2At) (see Appendix A). Exactly where a given implementation chooses to end the timing of the lifetime of a received SN and begin the lifetime timing of its Ack is an implementation choice. In this model StimeStamp is used to compute
-the interval between acceptance testing of the most recently arrived SN and its Ack. The Rtimer (see receive state below) is to be refreshed at the point the lifetime timing of each incoming SN stops. Default:	= 0.
+Rendezvous packet requiring an Ack packet. This is a model dependent variable required here because an Ack is not necessarily generated immediately when Data or Rendezvous packets are tested for acceptance. The EIM must schedule a DtAck call to cause Delta-t to update the receive window (Riwre-Riwle) and generate the Ack. If no delay were assumed between the return from a DtPktRcvd call and the issuing of the DtAck, this variable would not be needed. The requirement that must be met for correct Delta-t operation is that there must be no gap between the timing of the lifetimes of the latest SN and its Ack. The condition to be met is that the combined lifetime of the latest SN received in a Data or Rendezvous packet and its Ack must not exceed 2*2**PAtexp (2Δt) (see Appendix A). Exactly where a given implementation chooses to end the timing of the lifetime of a received SN and begin the lifetime timing of its Ack is an implementation choice. In this model StimeStamp is used to compute
+the interval between acceptance testing of the most recently arrived SN and its Ack. The Rtimer (see receive state below) is to be refreshed at the point the lifetime timing of each incoming SN stops. Default:       = 0.
 When changed: StimeStamp is set to the current dateTime during the procedures processData or processRendezvous and reset
 when an Ack packet is sent (see procedure sendAck)}
 {Now we define a send SN space, a series of SNs that correspond in SN space to the pointers in the ISR logical send queue (see Appendix B).}
-Sou, {Purpose:	SN of the oldest unAcked SN. If Sou = Sowle then all Data
-or Rendezvous packets sent have been Acked. Default:	= arbitrary.
+Sou, {Purpose:  SN of the oldest unAcked SN. If Sou = Sowle then all Data
+or Rendezvous packets sent have been Acked. Default:    = arbitrary.
 When changeo: Sou is updated during the procedure processAck as data or Rendezvous packets sent are Acked.
-Sowle, {Purpose:	SN of the next bit or Rendezvous packet to be sent
-(output-window-left-£dge). Default:	= Sou.
+Sowle, {Purpose:        SN of the next bit or Rendezvous packet to be sent
+(output-window-left-£dge). Default:     = Sou.
 When changed: Sowle is changed in the procedures sendData and sendRendezvous when a Data or Rendezvous packet is
 Sowre:SN; {Purpose:
 created.
@@ -1585,13 +1640,13 @@ advertised willingness to receive SN's up to but not including Sowre. Sowre is u
 Default: When changed: Sowre is updated to Sou + Pwindow in the procedure
 processAck, to Sowle in the procedure sendData when a E-bit is sent (output window goes zero), and to Sowle plus an offset provided by the EIM in procedure DtStartData.
 {all arithmetic and inequalities with SNs must be performed correctly modulo 2**32. The relationship Sou £ Sowle < Sowre must always hold}
-SrendSenderInd, {Purpose:	Indicates that a Rendezvous packet has been sent and the
+SrendSenderInd, {Purpose:       Indicates that a Rendezvous packet has been sent and the
 sender is waiting for its output window to open (Sowre > Sowle).
-Default: false. When changed:	Set during the procedure sendRendezvous and reset
+Default: false. When changed:   Set during the procedure sendRendezvous and reset
 Sovflwind, {Purpose:
 during the procedure processAck, when the window opens.}
 A model dependent flag recording that data sent have overflowed. This will result in a Rendezvous packet being sent when DtStartData is called.
-Default: false. When changed:	Sovflwind is set in the procedure processAck when
+Default: false. When changed:   Sovflwind is set in the procedure processAck when
 SeSentInd, {Purpose:
 overflow occurs and is reset in sendRendezvous when the SN's of the overflow data have been skipped.}
 A model dependent flag indicating that an E-bit has been sent, but has not yet been Acked. While SeSentInd is true the output window (Sowre-Sowle should remain zero.
@@ -1606,11 +1661,11 @@ SseriousNakInd:Boolean;
 {Purpose:
 Records that a Nak has been received indicating there is some problem serious enough to suspend sending new data packets (not required for correct operation, only for efficiency). Retrys should be continued for the normal cycle just in case the Nak was caused by a transient malfunction or ambiguous Nak exists (see Section 6.6.1).
 false. the procedures StimerExpired and processAck}
-SnakReason: integer; {Purpose:	Location for keeping the latest PnakReason. This code is
+SnakReason: integer; {Purpose:  Location for keeping the latest PnakReason. This code is
 reported as a problem hint to the EIM if a giveup timeout error occurs. It is advisory information only.
-Default: 0,meanshavenotreceivedanyNakreason. When changed:	Set during processNak and reset in procedures
+Default: 0,meanshavenotreceivedanyNakreason. When changed:      Set during processNak and reset in procedures
 processAck and, StimerExpired (when the CR is reset to default values) (when all data or, packets sent have been Acked).}
-Default: When changed:	During the procedure processNak, and reset during
+Default: When changed:  During the procedure processNak, and reset during
 SinPtr, SoutPtr, SendPtr = fRetryRecord (see below); {Purpose:
 ThesepointerspointtoRetryRecordsinaRetryQueue. (How retry is handled is model or implementation dependent. A particular retry algorithm is included here for completeness of the model.) SinPtr is nil or points to the first Retry Record in the queue. SoutPtr is nil or points to the oldest RetryRecord in the queue with an active retry timer. SendPtr is nil or points to the end (last) record in the queue. The errTries in the closed interval between SinPtr and SoutPtr will be retransmitted when their retry timers expire, if packet lifetime has not expired. The entries in the interval between SoutPtr but not including the entry at SoutPtr, and SendPtr including the entry at SendPtr have had their maximum number of retries and are waiting for acknowledgement.
 The oldest entry that can be retried is at SoutPtr and the youngest will be added in front of the entry at SinPtr. The entries are thus ordered by age.
@@ -1622,7 +1677,7 @@ expires} rrPID: SN; {SN in packet Pid field}
 rrSNO: integer; {for Data packets this is Pdl, for Ack packets its Pwindow, for Rendezvous packets its Psno}
 rrBlink, {back link to previous entry} rrFlink = \ RetryRecord; {forward link to next
 entry} end {RetryRecord}.
-Default: SinPtr=SoutPtr=SencPtr=nil. When changed:	These pointers are manipulated during the various
+Default: SinPtr=SoutPtr=SencPtr=nil. When changed:      These pointers are manipulated during the various
 retry procedures (see Section 6.4.2), and are reset in the procedure StimerExpired when the CR is returned to its default state.}
 {Receive related variables}
 Rtimer: Datetime;
@@ -1652,7 +1707,7 @@ number of SNs that can be accepted and the value of Pwindow sent in Ack packets.
 Default: undefined. When changed: Riwre is adjusted in procedures DtAck, processData,
 processRendezvous. It represents user interface
 Receive events.} Rov fIwind:Boolean;
-{Purpose:	A flag indicating that the receiver's buffers were overrun and that Data packets should not be accepted until a Rendezvous packet is accepted and Riwle has been adjusted to protect against duplicates of the overflow bits.
+{Purpose:       A flag indicating that the receiver's buffers were overrun and that Data packets should not be accepted until a Rendezvous packet is accepted and Riwle has been adjusted to protect against duplicates of the overflow bits.
 Default: false. When changed: It is set during the procedure processData when
 overflow occurs, and is reset during the procedure processRendezvous and DtTimeout.}
 end {CR}.
@@ -1664,7 +1719,7 @@ The CR is created and destroyed by the following procedures.
 The procedure getCR returns the CR for a given association and, if
 necessary, creates one.
 
-procedure	getCR (assoc:AR; var crPtr:CRpointer). {AR and CR are association and connection records}.
+procedure       getCR (assoc:AR; var crPtr:CRpointer). {AR and CR are association and connection records}.
 begin {CRs are kept in an implementation dependent data structure where
 they can be retrieved efficiently by association. If no CR exists for the association, one is created in the default state and is placed in the CR structure. If there is no CR space available then crPtr returns nil and the Delta-t procedure will fail. More sophistication is certainly possible but not modeled here.}
 if (EIMtime-Aidt) <3*2**AAtexp then with crPtrt do EIMalarm (assoc, Aidt + 3*2**AAtexp, true,
@@ -1709,7 +1764,7 @@ EIMalarm (assoc, timer, true, presenceFlg) {sets alarm} end {setTimer};
 procedure DGaajustLifetime (timestamp:Datetime; offset:integer; ptr:PKTpointer-fPKT; var remainingLifetime:integer); {defined in DeltaGram specification [19].
 begin This primitive adjusts the lifetime of the packet pointed to by ptr and remainingLifetime returns a value £ 0 if the lifetime has expired else returns a value > 0.}
 end {DGadjustLifetime},
-procedure EIMtime {defined in Section4}); procedure EIMalarm ({defined in Section4}); procedure DtTimeout ({defined in Section 6.4}); procedure DtAck ({defined in Section 6.5.1}); procedure DtStartData ({defined in Section 6.5.2}); procedure DtFinishData ({defined in Section 6.5.2}); procedure DtPktRcvd ({defined in Section	6.6}); procedure dataChecksum ({defined in Section 6.5.2});
+procedure EIMtime {defined in Section4}); procedure EIMalarm ({defined in Section4}); procedure DtTimeout ({defined in Section 6.4}); procedure DtAck ({defined in Section 6.5.1}); procedure DtStartData ({defined in Section 6.5.2}); procedure DtFinishData ({defined in Section 6.5.2}); procedure DtPktRcvd ({defined in Section   6.6}); procedure dataChecksum ({defined in Section 6.5.2});
 -39-
 
 procedure headerChecksum ({defined in Section 6.5.2}); procedure addRetryEntry ({defined in Section 6.4.2}); procedure deleteAckedEntries ({defined in Section 6.4.2}); procedure deleteRetryEntry ({defined in Section 6.4.2}); procedure sendAck ({defined in Section 6.5.1});
@@ -1729,7 +1784,7 @@ output actions. It checks to see if the CR is in a default state. It
 also determines whether or not EIM sending can proceed.
 
 DtTimeout ( {args}
-assoc:AR;	{association record for association with timer expiration.}
+assoc:AR;       {association record for association with timer expiration.}
 sPkt:PKTpointer {Packet header for possible Ack or Rendezvous packet needing retransmission.}
 {returns} var retryFlg, {if true then the next DtStartData call should be for
 count retry data bits starting at offset relative to
@@ -1960,7 +2015,7 @@ begin Pver := {DeltaGram version number as appropriate}; Ptype := Ack; Presl:= 0
 PAtexp:=AAtexp; Pid := Riwle;
 Pdestaddr := Aassoc.destAodr; Poriginaddr := AassocoriginAcdr; Pwof:= Rovflwind; Ppuf:= (Rtimer=0);
 Pres5:=0; Pres6:=0; PAtver:= {Delta-t version number as appropriate}
-procedure sendAck ({args}crPtr:CRpointer; sPkt:PKTpointer; retryFlg,rsFlg:Boolean); {retryFlg indicates Ack is a retry, rsFlg	indicates reliable-Ack should be sent for rendezvous-at-sender, sPtr is a pointer to a packet buffer to
+procedure sendAck ({args}crPtr:CRpointer; sPkt:PKTpointer; retryFlg,rsFlg:Boolean); {retryFlg indicates Ack is a retry, rsFlg   indicates reliable-Ack should be sent for rendezvous-at-sender, sPtr is a pointer to a packet buffer to
 end; end {sendAck}.
 end
 
@@ -2014,7 +2069,7 @@ sendCode:integer; {0 - means EIM data sending is blocked, do not issue DtStartDa
 Other codes not relevant for this return.} var typeFlg, {true if Data packet being formed, false if
 Rendezvous packet.} errorFlg:Boolean {errorflagsettrueifnoCRspace
 available.});
-var	crPtr:CRpointer; procedure sendData ({defined below});
+var     crPtr:CRpointer; procedure sendData ({defined below});
 function shouldData ({defined below}); function shouldRendezvous ({defined below});
 begin count2:= 0;
 errorFlg:= false; sendCode:= 1; getCR (assoc, crPtr); if crPtr = nil then errorFlg:= true eTse
@@ -2198,7 +2253,7 @@ header-only, to be sent. DtPktRcvd should have high enough priority so
 that packet lifetimes are unlikely to expire due to long packet
 queuing delays.
 
-procedure	DtPktRcvd ( {args}
+procedure       DtPktRcvd ( {args}
 assoc:AR; {association record} rPkt,= {pointertoheaderbufferforthereceivedpacket.
 The size of the packet can be determined from the packet type and,
 if a Data packet, the Pdl field.} sPkt:PKT; {packet header buffer for possible Nak packet}
@@ -2206,15 +2261,15 @@ timeStamp:dateTime; {time packet was received} rWindow:integer; {number of bits 
 available for association.}
 {returns} var type:integer; {packet type or value indicating ignore other
 returns.} var ackFlg:Boolean; {If true the EIM should issue a DtAck call at a convenient point to cause an Ack packet to be sent with latest receive window.}
-IData packet} var offset,	{offset relative to start of packet at which to
-obtain first data bit} count,	{number of bits to accept}
+IData packet} var offset,       {offset relative to start of packet at which to
+obtain first data bit} count,   {number of bits to accept}
 prtctLev:integer; {protection level of the data} var Bflg,
-Eflg	{flags indicating respectively whether first accepted bit is labeled by a B mark and the last acepted bit is labeled by an E mark.}
+Eflg    {flags indicating respectively whether first accepted bit is labeled by a B mark and the last acepted bit is labeled by an E mark.}
 nakFlg, {true if Nak formed}
-{Ack packet} var ovflwFlg:Boolean;	{flag if true all data bits at queue
+{Ack packet} var ovflwFlg:Boolean;      {flag if true all data bits at queue
 position ouPtr + ackOffset and beyond have overflowed and should be reset as if never sent and be sent again.}
-var ackOffset,	{SN offset relative to ouPtr in ISR for the number of data bits Acked}
-sendCode,	{(Also returned for Nak packets) 0 - means data sending is blocked, do not issue DtStartData calls.
+var ackOffset,  {SN offset relative to ouPtr in ISR for the number of data bits Acked}
+sendCode,       {(Also returned for Nak packets) 0 - means data sending is blocked, do not issue DtStartData calls.
 1 - means even if owreOffset is smaller than desired (including zero), issue a DtStartData call when data needs sending to enter rendezvous-at-sender
 procedure. 2 - means issue a DtStartData call, even if there is
 no data needing sending to cause a Data packet to be sent to Ack a reliable-Ack.}
@@ -2228,7 +2283,7 @@ const n = {value indicating ignore other returns}; var crPtr:CRpointer;
 remainingLifetime:integer;
 procedure procedure procedure procedure procedure
 begin type:= n;
-processData ({defined in Section 6.6.2}); processAck ({defined in Section 6.6.3}); processRendezvous ({defined in Section 6.6.4}); processNak ({defined in Section 6.6.5}); sendNak ({defined in Section	6.6.6});
+processData ({defined in Section 6.6.2}); processAck ({defined in Section 6.6.3}); processRendezvous ({defined in Section 6.6.4}); processNak ({defined in Section 6.6.5}); sendNak ({defined in Section        6.6.6});
 getCR (assoc, crPtr); if crPtr A nil then {if crPtr = nil packet will be discarded and
 become "lost"''! begin
 ackFlg:= false; nakFlg:= false; offset:= 0; count:= 0; prtctLev:= 0; {or should it be highest level?} Bflg:= false;
@@ -2268,8 +2323,8 @@ copies the accepted data to buffers it manages. The EIM will signal
 the user if a Receive completes. When an Ack is required, the EIM will
 call DtAck to report its current window and an Ack will be generated.
 
-procedure	processData ({args} crPtr:CRpointer; rPkt, sPkt:PKTpointer; rWindow, {returns} var offset, count, prtctLev:integer;var ackFlg,Bflg,Eflg,nakFlg:Boolean);
-const n = {large number}; var temp:integer; b:Boolean; procedure	acceptData (crPtr:CRpointer; rPkt sPkt:PKTpointer; var
+procedure       processData ({args} crPtr:CRpointer; rPkt, sPkt:PKTpointer; rWindow, {returns} var offset, count, prtctLev:integer;var ackFlg,Bflg,Eflg,nakFlg:Boolean);
+const n = {large number}; var temp:integer; b:Boolean; procedure        acceptData (crPtr:CRpointer; rPkt sPkt:PKTpointer; var
 ackFlg, nakFlg, b:Boolean); {defined below};
 begin with crPtrf do
 begin acceptData (crPtr, rPkt, sPkt, ackFlg, nakFlg, b,);
@@ -2515,7 +2570,7 @@ procedure sendNak (targs}crPtr:CRpointer; rPkt, sPkt:PKTpointer; naRReason,remai
 {rPkt is pointer to packet being Naked and sPkt is buffer for Nak packet being formed}
 begin iSeveral of the fields in the packet header are left alone} sPkt.Pver:= rPkt.ver; sPkt.Presl:= 0; sPkt.Ptype:=Nak;
 sPkt.Pdn:= true; sPkt.PprtctLev:= rPkt.PprtctLev; sPkt.PAtexp:= rPkt.PAtexp; sPkt.Plifetime:= 2**rPkt.PAtexp + remainingLifetime {assume
-remainingLifetime	£ 0 } ; sPkt.Pid:= rPkt.Pid; sPkt.Pdestaddr:= rPkt.Poriginaddr; sPkt.Poriginaddr :=rPkt.Pdestaddr; sPkt.PnakRes := 0; sPkt.PnakReason :=nakReason; sPkt.Pdl:= rPkt.Pdl; PheaderChecksum (sPkt);
+remainingLifetime       £ 0 } ; sPkt.Pid:= rPkt.Pid; sPkt.Pdestaddr:= rPkt.Poriginaddr; sPkt.Poriginaddr :=rPkt.Pdestaddr; sPkt.PnakRes := 0; sPkt.PnakReason :=nakReason; sPkt.Pdl:= rPkt.Pdl; PheaderChecksum (sPkt);
 end {sendNak}.
 
 # Acknowledgment
@@ -2524,7 +2579,7 @@ Delta-t was designed with John Fletcher. Jed Donnelley played an
 important role in motivating the need for a reliable transaction
 oriented protocol, the sender and receiver not having to agree on the
 values for the
-componentsofacommonAt,andforrendezvous-at-the-sender. DanNessett, Bob
+componentsofacommonΔt,andforrendezvous-at-the-sender. DanNessett, Bob
 Judd, and Lansing Sloan made many helpful suggestions. The design
 benefited significantly from interactions with members of the ARPA TCP
 protocol design community, particularly Jon Postel. Valuable
@@ -2620,32 +2675,32 @@ community influenced several decisions.
 # APPENDIX A Notes on Timer Values and Rules
 
 The purpose of this appendix is to outline the arguments leading to
-the requirements that the Stimer run 3At and that the Rtimer run
-2At. The value of At used can be different for each direction of data
+the requirements that the Stimer run 3Δt and that the Rtimer run
+2Δt. The value of Δt used can be different for each direction of data
 movement on an association. The conditions that the timer intervals
 must satisfy are the following.
 
  - A. Rtimer Conditions
     - 1) (Assurance)Noduplicatescanbeaccepted.
     - 2) (Smoothflow)GuaranteethatanypacketsentwithPdrf=falsethat
-      	 arrives at the receiver after a predecessor packet sent with
-      	 Pdrf = true will be acceptable (will arrive before the
-      	 receiver's Rtimer has run out).
+         arrives at the receiver after a predecessor packet sent with
+         Pdrf = true will be acceptable (will arrive before the
+         receiver's Rtimer has run out).
 
  - B. Stimer Conditions
     - 1) (Assurance)
        - a) Allow a graceful close (do not close until all data or
-       	    packets sent needing Acks can be acknowledged).
+            packets sent needing Acks can be acknowledged).
        - b) Assure that no SN will be reused until all previous
-       	    packets or their Acks or Naks using the SN have died. This
-       	    condition is not necessary for Naks (see Section 6.6.1)
+            packets or their Acks or Naks using the SN have died. This
+            condition is not necessary for Naks (see Section 6.6.1)
     - 2. (Smooth flow) Run equal to or longer than Rtimer to guarantee
       acceptable SN's are generated.
 
 The timer rules given in Section 2.6 satisfy the above conditions on
 assumption that the sender initializes the Lifetime for an element
-(bit) to At. The term At has a different meaning in this specification
-than it did in the original paper [6]. The term At, as used here, is
+(bit) to Δt. The term Δt has a different meaning in this specification
+than it did in the original paper [6]. The term Δt, as used here, is
 the sum of three estimates on the sender's part, no one of which needs
 bounding individually if their sum isbounded:
 
@@ -2653,15 +2708,15 @@ bounding individually if their sum isbounded:
 MPL = maximum packet lifetime or a worst case estimate of network
 travel time.
 A = time for receiver to generate an acknowledgment.
-At = R+MPL+A.
+Δt = R+MPL+A.
 
 ## Timer Rules
 
-### Condition A-1 needs Rtime > At
+### Condition A-1 needs Rtime > Δt
 
-Condition A-1 is satisfied by the interval At because the receiver
+Condition A-1 is satisfied by the interval Δt because the receiver
 sets its timer whenever it accepts an SN. No bit can live longer than
-At by R.5
+Δt by R.5
 (seeSection2.6). (Note:thereceivercannotjustsetitsRtimerfromthe value
 in the Plifetime field of the accepted packet because the rule for
 counting it down requires at least one tick for each link and node a
@@ -2670,75 +2725,75 @@ is infinitesimal. Therefore, two identical packets going by different
 routes could live different times relative to R timer and cause a
 duplicate to be accepted.)
 
-### Condition A-2 needs Rtime > 2At
+### Condition A-2 needs Rtime > 2Δt
 
 The timer rules R.l through R.6 assure that Condition A-2 is satisfied
-by the interval 2At. The following worst case scenario requires this
+by the interval 2Δt. The following worst case scenario requires this
 interval.
 
  - 1) A packet Pj^ with Pdrf = true is emitted by the sender and
       arrives instantly at the receiver. The receiver sets Rtimer.
 
  - 2) Because of lost Acks requiring packet retransmission or delayed
-      Acks, no Ack to Pi has arrived at the sender at At-x (where x is
+      Acks, no Ack to Pi has arrived at the sender at Δt-x (where x is
       a very small number).
 
- - 3) TheinstantAt-xisthelastmomentwhenapacketcontainingnew elements
+ - 3) TheinstantΔt-xisthelastmomentwhenapacketcontainingnew elements
       can be emitted by the sender because of rule R.2. This packet
       will have Parf = false because P^ was unAcked at the time it was
       sent.
 
- - 4) Intheworstcaseitcouldarriveatthereceiverat2At-xsince the Rtimer
+ - 4) Intheworstcaseitcouldarriveatthereceiverat2Δt-xsince the Rtimer
       was set in step 1. For a packet with Pdrf = false to be
       accepted, Rtimer > 0, therefore yielding the need for Rtimer to
-      run 2At.
+      run 2Δt.
 
-### Condition B-1 needs Stime > 2At
+### Condition B-1 needs Stime > 2Δt
 
- - 1) APacketcanliveatmostAtbyruleR.5. ADatapacketandits Ack packet
-      can live at most 2At, with no gap in the timing of their
+ - 1) APacketcanliveatmostΔtbyruleR.5. ADatapacketandits Ack packet
+      can live at most 2Δt, with no gap in the timing of their
       lifetimes.
 
  - 2) For the same reason above, if an Ack is ever going to be
-      received, it will be received within 2At.
+      received, it will be received within 2Δt.
 
-### Condition B-2 needs Stime > 3At
+### Condition B-2 needs Stime > 3Δt
 
-A Data packet can take a maximum of At to reach the receiver which
-will set its Rtimer to 2At at that instant. Therefore, in the worst
-case the Rtimer can run at most 3At relative to the time of setting of
+A Data packet can take a maximum of Δt to reach the receiver which
+will set its Rtimer to 2Δt at that instant. Therefore, in the worst
+case the Rtimer can run at most 3Δt relative to the time of setting of
 Stimer.
 
 ### Crash with Loss of Memory
 
-Sender: Sender must wait 3At. The sender wants to be able to choose
+Sender: Sender must wait 3Δt. The sender wants to be able to choose
 any initial sequence number and be assured that:
 
  - 1) it will be accepted, implying that Rtimer must have gone to zero
-      (the At being discussed is the At used by the sender before the
+      (the Δt being discussed is the Δt used by the sender before the
       crash).
 
  - 2) any Data packets sent prior to the crash or their Acks that
       might have the same SN have died.
 
-Condition 1 above requires 3At because a packet emitted just before
-the crash coula take At to reach the receiver. The Rtimer would then
-run 2At from that point.
+Condition 1 above requires 3Δt because a packet emitted just before
+the crash coula take Δt to reach the receiver. The Rtimer would then
+run 2Δt from that point.
 
-Condition 2 above would be satisfied by 2At as discussed earlier.
+Condition 2 above would be satisfied by 2Δt as discussed earlier.
 
-Receiver: ReceivermustwaitAt.
+Receiver: ReceivermustwaitΔt.
 
 The receiver wants to be assured that it does not accept any duplicate
-of any SN accepted before the crash. Waiting At before accepting Data
+of any SN accepted before the crash. Waiting Δt before accepting Data
 or Rendezvous packets is sufficient for this need. Ack or Nak packets
 must only provide information on data sent after deadstart and waiting
-the 3At interval above assumes no old Acks will still exist. Given the
+the 3Δt interval above assumes no old Acks will still exist. Given the
 way the algorithm of Section 6 is written Naks might exist longer but
 no harm results. (Note: If we changed the rule that says "senders keep
 retransmitting when an element has had its maximum retransmission
 interval" to "not retransmitting and freezing the Lifetime," the wait
-after a crash would increase to 2At. All other timer values would be
+after a crash would increase to 2Δt. All other timer values would be
 the same, but the aerivation would be as per reference [7].)
 
 # APPENDIX B EIM Interface State Record Definition and IPC User Interface Operations
@@ -2760,7 +2815,7 @@ to Delta-t (e.g., a flag may be necessary to remember that a DtAck
 call should be issued).
 
 II
-received	I elements	iwlePtr
+received        I elements      iwlePtr
 (a) Receive Queue
 empty elements
 iwrePtr
@@ -2779,14 +2834,14 @@ ouPtr
 owlePtr (c) Send Queue
 owrePtr
 
-Dit	B	PrtctLev
+Dit     B       PrtctLev
 (d) Send Queue Element Figure B.l. Association Queues
-1 1 Receive State 1 1	1 1ouPtr 11
-1	iwlePtr 1	iwreOffset
+1 1 Receive State 1 1   1 1ouPtr 11
+1       iwlePtr 1       iwreOffset
 RSind
-1	owleOffset 1	owreOffset 1seOffset 1sendCode 1 giveupError
+1       owleOffset 1    owreOffset 1seOffset 1sendCode 1 giveupError
 Figure 2. Interface State Record
-1	1 I Send State	1 1 1 1 1 |	I
+1       1 I Send State  1 1 1 1 1 |     I
 
 ### ISR Definition
 
@@ -2818,16 +2873,16 @@ Optional Wakeup
 Params
 
 RSind Purpose:
-Default: When	changed:
+Default: When   changed:
 Seng State
 ouPtr Purpose:
 Default: When changed:
 owleOffset Purpose:
-Default: When	changed:
+Default: When   changed:
 owreOffset Purpose:
-Default: When	changed:
+Default: When   changed:
 seOffset Purpose:
-Default: When	changeo:
+Default: When   changeo:
 A flag set true when rsFlg returned from DtPktRcvd is true indicating that the correspondent sending port desires to send on this association and to be reliably informed when empty receive queue elements are available. false. Set true by the EIM when rsFlg returned true from DtPktRcvd. Reset when DtAck called with rsFlg indicating nonzero window exists (empty elements added to receive queue).
 Pointertotheoldestunackedelement. Apointertotheoldest (lowestnumbered)elementsentbutnotyetacknowledged. There is an element to be Acked only if owleOffset>0. 0 (heaaofqueue)
 Incremented by EIM as each bit sent is Acked (ackOffset returned in DtPktRcvd).
@@ -2839,7 +2894,7 @@ n (somedefault,receiversareinitiallywillingtoaccept.) Updated by EIM from owreOf
 AnoffsetrelativetoouPtrdefiningsePtr (send-end),thenext queue position to add an element for sending. 0 (headofqueue)
 Incremented or decremented by the User Send and Abort procedures and by the EIM as bits are Acked.
 sendCode Purpose: Code indicating whether or not a DtStartData call can or
-should be issued. 0 =	do not issue DtStartData call even if nonzero output window
+should be issued. 0 =   do not issue DtStartData call even if nonzero output window
 exists as some protocol condition is blocking data sending.
 giveupError Purpose:
 Default: When changed:
